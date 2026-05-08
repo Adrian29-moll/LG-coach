@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LG Coach — Adrián</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LG Coach">
+<meta name="theme-color" content="#0d0d0d">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230d0d0d'/%3E%3Ctext x='50' y='68' font-family='Arial Black' font-size='50' font-weight='900' fill='%23E2000F' text-anchor='middle'%3ELG%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230d0d0d'/%3E%3Ctext x='50' y='68' font-family='Arial Black' font-size='50' font-weight='900' fill='%23E2000F' text-anchor='middle'%3ELG%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:#E2000F; --red-dim:#ff1a271a;
+  --green:#00b341; --green-dim:#00b34115;
+  --amber:#d4891a; --amber-dim:#d4891a15;
+  --blue:#2a7de1; --blue-dim:#2a7de115;
+  --purple:#7c5cbf; --purple-dim:#7c5cbf15;
+  --bg:#0d0d0d; --surface:#181818; --surface2:#222;
+  --border:#2a2a2a; --border2:#333;
+  --text:#f0ede8; --muted:#777;
+  --mono:'DM Mono',monospace; --display:'Syne',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100%}
+body{max-width:480px;margin:0 auto;padding:0 0 145px}
+
+/* HEADER */
+.header{padding:1.4rem 1.25rem .9rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between}
+.header-title{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.5px}
+.header-sub{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:.08em;text-transform:uppercase}
+.header-right{text-align:right}
+.header-month{font-size:11px;color:var(--red);font-weight:500;letter-spacing:.06em;text-transform:uppercase}
+.header-save{font-size:10px;color:var(--muted);margin-top:3px;cursor:pointer;text-decoration:underline}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg);border-top:1px solid var(--border);display:flex;z-index:100}
+.nav-btn{flex:1;padding:13px 0 18px;background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:color .2s}
+.nav-btn.active{color:var(--red)}
+.nav-icon{font-size:22px}
+
+/* SECTIONS */
+.section{display:none;padding:1.25rem}
+.section.active{display:block}
+
+/* SEGMENT TABS (TV / AV) */
+.seg-tabs{display:flex;background:var(--surface2);border-radius:10px;padding:3px;margin-bottom:1rem;gap:3px}
+.seg-tab{flex:1;padding:7px;border:none;border-radius:8px;background:none;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:all .2s;text-align:center}
+.seg-tab.active{background:var(--surface);color:var(--text);border:1px solid var(--border2)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:.75rem}
+.card-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:.75rem}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem}
+.metric-label{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.metric-val{font-family:var(--display);font-size:28px;font-weight:700}
+.metric-val.green{color:var(--green)}
+.metric-val.amber{color:var(--amber)}
+
+/* OBJ CARDS */
+.obj-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.125rem;margin-bottom:.75rem;position:relative;overflow:hidden}
+.obj-card.unlocked{border-color:#00b34130}
+.obj-card.unlocked::before,.obj-card.locked::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.obj-card.unlocked::before{background:var(--green)}
+.obj-card.locked::before{background:var(--red)}
+.obj-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.obj-name{font-family:var(--display);font-size:16px;font-weight:700}
+.obj-cat{font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.obj-badge{font-size:11px;padding:4px 10px;border-radius:20px;font-weight:500}
+.badge-green{background:var(--green-dim);color:var(--green);border:1px solid #00b34140}
+.badge-red{background:var(--red-dim);color:var(--red);border:1px solid #e2000f30}
+.badge-amber{background:var(--amber-dim);color:var(--amber);border:1px solid #d4891a30}
+.badge-blue{background:var(--blue-dim);color:var(--blue);border:1px solid #2a7de130}
+
+/* PROGRESS */
+.progress-wrap{margin:10px 0}
+.progress-track{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.fill-green{background:var(--green)} .fill-amber{background:var(--amber)} .fill-red{background:var(--red)} .fill-blue{background:var(--blue)}
+.progress-info{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px}
+
+/* TRAMOS */
+.tramo-list{margin-top:10px}
+.tramo-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.tramo-row:last-child{border-bottom:none}
+.tramo-n{color:var(--muted);width:22px;font-size:10px}
+.tramo-uds{font-weight:500;width:40px}
+.tramo-spacer{flex:1}
+.tramo-inc{color:var(--green);font-weight:500}
+.tramo-chip{font-size:9px;padding:2px 6px;border-radius:10px}
+.chip-cur{background:#00b34120;color:var(--green);border:1px solid #00b34140}
+.chip-min{background:#d4891a15;color:var(--amber);border:1px solid #d4891a30}
+
+/* COMBO BONUS */
+.combo-card{background:var(--surface);border:1px solid #d4891a40;border-radius:12px;padding:1rem 1.125rem;margin-bottom:.75rem;position:relative;overflow:hidden}
+.combo-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber)}
+.combo-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.combo-title{font-size:10px;color:var(--amber);letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.combo-val{font-family:var(--display);font-size:18px;font-weight:700;color:var(--amber)}
+.combo-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.combo-progress{margin-top:10px}
+
+/* OBJETIVO DÍA */
+.obj-dia{background:var(--surface);border:1px solid #d4891a30;border-radius:12px;padding:1rem 1.125rem;margin-bottom:.75rem;position:relative;overflow:hidden}
+.obj-dia::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber)}
+.obj-dia-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.obj-dia-title{font-size:10px;color:var(--amber);letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.obj-dia-link{font-size:10px;color:var(--muted);cursor:pointer;text-decoration:underline}
+.obj-dia-body{font-size:13px;line-height:1.65}
+
+/* SELL / COUNTER */
+.sell-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.sell-item:last-child{border-bottom:none}
+.sell-name{font-size:13px;font-weight:500}
+.sell-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.counter{display:flex;align-items:center;gap:9px}
+.counter-btn{width:29px;height:29px;border-radius:50%;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.counter-btn:active{background:var(--border)}
+.counter-val{font-family:var(--display);font-size:19px;font-weight:700;min-width:24px;text-align:center}
+
+/* BONUS CATALOG */
+.bcat-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border)}
+.bcat-row:last-child{border-bottom:none}
+.bcat-info{flex:1;min-width:0}
+.bcat-name{font-size:12px;font-weight:500}
+.bcat-sub{font-size:10px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:6px}
+.tag-bp{font-size:9px;background:var(--surface2);color:var(--muted);border:1px solid var(--border2);padding:1px 5px;border-radius:8px}
+.euros-input{background:none;border:none;border-bottom:1px solid var(--border2);color:var(--green);font-family:var(--mono);font-size:11px;width:36px;text-align:right;outline:none;padding:0 2px}
+.euros-input:focus{border-bottom-color:var(--amber)}
+.bcat-ganado{color:var(--green);font-size:11px;font-weight:500;min-width:36px;text-align:right}
+.bcat-ganado.zero{color:var(--muted)}
+
+/* SOUNDBAR rows in catalog */
+.sb-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.sb-row:last-child{border-bottom:none}
+.sb-name{flex:1;font-size:12px;font-weight:500}
+.sb-eur{color:var(--green);font-size:11px;min-width:32px;text-align:right}
+
+/* FORM */
+.form-group{margin-bottom:.875rem}
+.form-label{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;display:block}
+.form-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--red)}
+.form-input option{background:var(--surface2)}
+
+/* BUTTONS */
+.btn-primary{width:100%;background:var(--red);color:#fff;border:none;border-radius:10px;padding:12px;font-family:var(--display);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s}
+.btn-primary:active{opacity:.85;transform:scale(.98)}
+.btn-ghost{background:none;border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:8px 14px;font-family:var(--mono);font-size:12px;cursor:pointer}
+.btn-danger{background:none;border:1px solid #e2000f40;color:var(--red);border-radius:8px;padding:8px 14px;font-family:var(--mono);font-size:12px;cursor:pointer}
+
+/* COACH */
+.coach-box{background:var(--surface2);border-left:3px solid var(--red);border-radius:0 10px 10px 0;padding:1rem;font-size:13px;line-height:1.7;margin-bottom:.75rem}
+.coach-from{font-size:10px;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+
+/* HISTORIAL */
+.mes-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.125rem;margin-bottom:.75rem;cursor:pointer}
+.mes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.mes-nombre{font-family:var(--display);font-size:15px;font-weight:700}
+.mes-total{color:var(--green);font-family:var(--display);font-size:18px;font-weight:700}
+.mes-stats{display:flex;gap:12px;font-size:11px;color:var(--muted)}
+
+.detail-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:200;overflow-y:auto}
+.detail-overlay.open{display:block}
+.detail-panel{max-width:480px;margin:0 auto;background:var(--bg);min-height:100%;padding:1.5rem 1.25rem 3rem}
+.detail-close{background:none;border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:6px 14px;font-family:var(--mono);font-size:12px;cursor:pointer;margin-bottom:1.25rem}
+
+/* CONFIG */
+.dias-row{display:flex;align-items:center;gap:10px}
+.dias-row input[type=range]{flex:1;accent-color:var(--red)}
+.dias-val{font-family:var(--display);font-size:18px;font-weight:700;min-width:40px}
+
+.empty{font-size:12px;color:var(--muted);text-align:center;padding:1.5rem 0}
+.divider{height:1px;background:var(--border);margin:.75rem 0}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div style="width:42px;height:42px;background:#E2000F;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:#fff;letter-spacing:-.5px">LG</span></div>
+    <div>
+      <div class="header-title">LG Coach</div>
+      <div class="header-sub">Promotor · Media Markt LPA</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-month" id="header-month"></div>
+    <div class="header-save" onclick="cerrarMes()">Cerrar mes →</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="sec-dashboard" class="section active">
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">Días restantes</div>
+      <div class="metric-val amber" id="m-dias">—</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Incentivo total</div>
+      <div class="metric-val green" id="m-total">—</div>
+    </div>
+  </div>
+
+  <!-- TV objectives -->
+  <div style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Objetivos TV</div>
+  <div id="dash-tv"></div>
+
+  <!-- AV objectives -->
+  <div style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;margin-top:.25rem">Objetivos AV</div>
+  <div id="dash-sb-combo"></div>
+  <div id="dash-av"></div>
+
+  <!-- Objetivo del día -->
+  <div class="obj-dia">
+    <div class="obj-dia-header">
+      <span class="obj-dia-title">Objetivo del día</span>
+      <span class="obj-dia-link" onclick="irAlCoach()">Análisis completo →</span>
+    </div>
+    <div id="obj-dia-body" class="obj-dia-body" style="color:var(--muted);font-size:12px">Calculando...</div>
+  </div>
+</div>
+
+<!-- VENTAS -->
+<div id="sec-ventas" class="section">
+  <div class="seg-tabs">
+    <button class="seg-tab active" onclick="showSegVenta('tv',this)">TV</button>
+    <button class="seg-tab" onclick="showSegVenta('av',this)">AV</button>
+  </div>
+  <div id="venta-tv">
+    <div class="card">
+      <div class="card-label">Unidades por categoría</div>
+      <div id="venta-tv-cats"></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;padding:.25rem 0">Las bonificaciones TV se registran en la pestaña Bonus</div>
+  </div>
+  <div id="venta-av" style="display:none">
+    <div class="card">
+      <div class="card-label">Soundbars — conteo total</div>
+      <div id="venta-sb"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">OBM (auriculares)</div>
+      <div id="venta-obm"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">BT (altavoces portátiles)</div>
+      <div id="venta-bt"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Proyectores — por modelo</div>
+      <div id="venta-proy"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BONUS -->
+<div id="sec-bonus" class="section">
+  <div class="seg-tabs">
+    <button class="seg-tab active" onclick="showSegBonus('tv',this)">TV</button>
+    <button class="seg-tab" onclick="showSegBonus('sb',this)">Soundbars</button>
+  </div>
+  <div id="bonus-tv">
+    <div class="card" style="margin-bottom:.5rem">
+      <div class="card-label" style="margin-bottom:4px">Catálogo TV · €/Store</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6">Usa +/− para registrar. Edita el € si lo cambian. Gris = bajo pedido.</div>
+    </div>
+    <div id="bonus-tv-catalogo"></div>
+  </div>
+  <div id="bonus-sb" style="display:none">
+    <div class="card" style="margin-bottom:.5rem">
+      <div class="card-label" style="margin-bottom:4px">Soundbars Dolby Atmos · €/unidad</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6">Mínimo 5 barras (cualquier modelo) para cobrar bonificación. Edita el importe si cambia.</div>
+    </div>
+    <div id="bonus-sb-catalogo"></div>
+  </div>
+</div>
+
+<!-- HISTORIAL -->
+<div id="sec-historial" class="section">
+  <div id="historial-lista"></div>
+  <div class="empty" id="historial-empty" style="display:none">Aún no has cerrado ningún mes.</div>
+</div>
+
+<!-- COACH -->
+<div id="sec-coach" class="section">
+  <div id="coach-area">
+    <div class="coach-box">
+      <div class="coach-from">Coach LG · IA</div>
+      Hola Adrián. Pulsa cualquier botón para analizar tu situación o entrenar ventas.
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:.5rem">
+    <button class="btn-primary" onclick="coachAnalisis()">📊 Analizar mi mes completo</button>
+    <button class="btn-ghost" onclick="coachObjecion()">💬 Simular objeción de precio</button>
+    <button class="btn-ghost" onclick="coachPrioridad()">🎯 ¿Qué vender hoy?</button>
+    <button class="btn-ghost" onclick="coachCierre()">🤝 Técnica de cierre</button>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div id="sec-config" class="section">
+  <div class="card">
+    <div class="card-label">Días laborables restantes</div>
+    <div class="dias-row" style="margin-top:6px">
+      <input type="range" min="1" max="31" id="dias-slider" oninput="updateDias(this.value)">
+      <div class="dias-val" id="dias-display">—</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Tramos TV</div>
+    <div id="config-tv-tramos"></div>
+    <button class="btn-ghost" style="width:100%;margin-top:10px;font-size:11px" onclick="resetTramos()">Restablecer mayo 2025</button>
+  </div>
+  <div class="card">
+    <div class="card-label">Tramos AV — OBM / BT</div>
+    <div id="config-av-tramos"></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Datos</div>
+    <button class="btn-danger" style="width:100%" onclick="if(confirm('¿Borrar todos los datos?'))resetAll()">Borrar todo y empezar de cero</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSec('dashboard',this)"><span class="nav-icon">◈</span>Inicio</button>
+  <button class="nav-btn" onclick="showSec('ventas',this)"><span class="nav-icon">+</span>Ventas</button>
+  <button class="nav-btn" onclick="showSec('bonus',this)"><span class="nav-icon">★</span>Bonus</button>
+  <button class="nav-btn" onclick="showSec('historial',this)"><span class="nav-icon">◷</span>Historial</button>
+  <button class="nav-btn" onclick="showSec('coach',this)"><span class="nav-icon">◎</span>Coach</button>
+  <button class="nav-btn" onclick="showSec('config',this)"><span class="nav-icon">⚙</span>Config</button>
+</nav>
+
+<!-- DETALLE -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-panel" id="detail-panel"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CATÁLOGOS
+// ═══════════════════════════════════════════════════════════
+const CAT_TV = [
+  {id:'oled_55_g45',  cat:'oled',     inch:'55"',  serie:'G4/G5',          euros:15,  bp:false},
+  {id:'oled_65_g45',  cat:'oled',     inch:'65"',  serie:'G4/G5',          euros:20,  bp:false},
+  {id:'oled_65_m45',  cat:'oled',     inch:'65"',  serie:'M4/M5',          euros:60,  bp:true},
+  {id:'oled_77_c45',  cat:'oled',     inch:'77"',  serie:'C4/C5',          euros:20,  bp:false},
+  {id:'oled_77_g45',  cat:'oled',     inch:'77"',  serie:'G4/G5',          euros:70,  bp:false},
+  {id:'oled_77_m345', cat:'oled',     inch:'77"',  serie:'M3/M4/M5',       euros:80,  bp:true},
+  {id:'oled_77_b45',  cat:'oled',     inch:'77"',  serie:'B4/B5',          euros:25,  bp:false},
+  {id:'oled_83_c45',  cat:'oled',     inch:'83"',  serie:'C4/C5',          euros:40,  bp:false},
+  {id:'oled_83_g345', cat:'oled',     inch:'83"',  serie:'G3/G4/G5',       euros:100, bp:false},
+  {id:'oled_83_m345', cat:'oled',     inch:'83"',  serie:'M3/M4/M5',       euros:125, bp:true},
+  {id:'oled_97_all',  cat:'oled',     inch:'97"',  serie:'G2/M3/G4/G5/M5',euros:150, bp:true},
+  {id:'qned_65_92',   cat:'qned',     inch:'65"',  serie:'QNED92/93A',     euros:20,  bp:false},
+  {id:'qned_65_9m',   cat:'qned',     inch:'65"',  serie:'QNED9M',         euros:70,  bp:false},
+  {id:'qned_75_87',   cat:'qned',     inch:'75"',  serie:'QNED87',         euros:40,  bp:false},
+  {id:'qned_75_92',   cat:'qned',     inch:'75"',  serie:'QNED92/93A',     euros:40,  bp:false},
+  {id:'qned_75_9m',   cat:'qned',     inch:'75"',  serie:'QNED9M',         euros:85,  bp:false},
+  {id:'qned_86_8182', cat:'qned',     inch:'86"',  serie:'QNED81/82',      euros:50,  bp:false},
+  {id:'qned_86_86',   cat:'qned',     inch:'86"',  serie:'QNED86',         euros:75,  bp:false},
+  {id:'qned_85_9392', cat:'qned',     inch:'85"',  serie:'QNED93/92',      euros:100, bp:false},
+  {id:'qned_86_9m',   cat:'qned',     inch:'86"',  serie:'QNED9M',         euros:120, bp:false},
+  {id:'qned_98_89',   cat:'qned',     inch:'98"',  serie:'QNED89',         euros:100, bp:false},
+  {id:'qned_100_86',  cat:'qned',     inch:'100"', serie:'QNED86',         euros:100, bp:false},
+  {id:'nano_75_850',  cat:'nano',     inch:'75"',  serie:'NU850',           euros:15,  bp:false},
+  {id:'nano_85_850',  cat:'nano',     inch:'85"',  serie:'NU850',           euros:25,  bp:false},
+  {id:'nano_98_900',  cat:'nano',     inch:'98"',  serie:'NU900',           euros:50,  bp:false},
+];
+
+// Soundbars: €/unidad fijo, mínimo 5 barras para cobrar
+const CAT_SB = [
+  {id:'sb_s95tr', nombre:'S95TR', euros:30},
+  {id:'sb_s90tr', nombre:'S90TR', euros:20},
+  {id:'sb_s90yt', nombre:'S90YT', euros:20},
+  {id:'sb_s80tr', nombre:'S80TR', euros:20},
+  {id:'sb_sg10ty',nombre:'SG10TY',euros:15},
+  {id:'sb_s70tr', nombre:'S70TR', euros:10},
+  {id:'sb_sc9s',  nombre:'SC9S',  euros:15},
+  {id:'sb_s80ty', nombre:'S80TY', euros:20},
+  {id:'sb_h7',    nombre:'H7',    euros:20},
+  {id:'sb_v7',    nombre:'V7',    euros:15},
+  {id:'sb_m7',    nombre:'M7',    euros:10},
+  {id:'sb_m5',    nombre:'M5',    euros:5},
+];
+
+// Proyectores: €/unidad directo, sin mínimo
+const CAT_PROY = [
+  {id:'proy_pf50ks',     nombre:'PF50KS',        euros:20},
+  {id:'proy_hf60lsr',    nombre:'HF60LSR',       euros:50},
+  {id:'proy_hu80ks',     nombre:'HU80KS',        euros:100},
+  {id:'proy_pf510q',     nombre:'PF510Q',        euros:10},
+  {id:'proy_hu70ls',     nombre:'HU70LS/HU710PB',euros:75},
+];
+
+const CAT_NOMBRES_TV = {oled:'OLED', qned:'QNED', nano:'NANO', gama_baja:'Gama baja ≥65"'};
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+// ═══════════════════════════════════════════════════════════
+// STATE DEFAULT
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_TV = {
+  oled:     {nombre:'OLED',        min_tramo:5, tramos:[{n:1,uds:36,inc:250},{n:2,uds:31,inc:150},{n:3,uds:28,inc:100},{n:4,uds:22,inc:75},{n:5,uds:19,inc:50}],  vendidas:0},
+  qned:     {nombre:'QNED',        min_tramo:5, tramos:[{n:1,uds:72,inc:250},{n:2,uds:63,inc:150},{n:3,uds:57,inc:100},{n:4,uds:46,inc:75},{n:5,uds:41,inc:50}],  vendidas:0},
+  gama_baja:{nombre:'Gama baja ≥65"',min_tramo:4,tramos:[{n:1,uds:39,inc:325},{n:2,uds:26,inc:225},{n:3,uds:22,inc:165},{n:4,uds:19,inc:100}],               vendidas:0},
+};
+const DEFAULT_AV = {
+  obm:{nombre:'OBM',  min_tramo:3, tramos:[{n:1,uds:14,inc:100},{n:2,uds:10,inc:70},{n:3,uds:8,inc:50}], vendidas:0},
+  bt: {nombre:'BT',   min_tramo:3, tramos:[{n:1,uds:14,inc:100},{n:2,uds:10,inc:70},{n:3,uds:8,inc:50}], vendidas:0},
+};
+
+function defaultState() {
+  const now = new Date();
+  return {
+    mes: now.getMonth(), anio: now.getFullYear(), dias: 20,
+    tv: JSON.parse(JSON.stringify(DEFAULT_TV)),
+    av: JSON.parse(JSON.stringify(DEFAULT_AV)),
+    bonus_tv: {},   // id -> {vendidas, euros_override}
+    bonus_sb: {},   // id -> {vendidas, euros_override}
+    proy: {},       // id -> {vendidas, euros_override}
+    historial: []
+  };
+}
+
+function loadState() {
+  try { const r = localStorage.getItem('lg_v5'); if(r) return JSON.parse(r); } catch(e){}
+  return defaultState();
+}
+function saveState() { try { localStorage.setItem('lg_v5', JSON.stringify(S)); } catch(e){} }
+
+let S = loadState();
+// migrations
+if (!S.av)       S.av = JSON.parse(JSON.stringify(DEFAULT_AV));
+if (!S.bonus_sb) S.bonus_sb = {};
+if (!S.proy)     S.proy = {};
+if (!S.historial)S.historial = [];
+if (!S.bonus_tv) S.bonus_tv = S.bonus || {};
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function getMin(obj)  { return obj.tramos.find(t => t.n === obj.min_tramo); }
+function getActual(obj) {
+  const min = getMin(obj);
+  if (obj.vendidas < min.uds) return null;
+  for (const t of obj.tramos) { if (obj.vendidas >= t.uds) return t; }
+  return null;
+}
+function getSig(obj) {
+  const a = getActual(obj); if (!a) return getMin(obj);
+  const i = obj.tramos.findIndex(t => t.n === a.n);
+  return i > 0 ? obj.tramos[i-1] : null;
+}
+function btvEuros(id) {
+  const b = S.bonus_tv[id]; if (b && b.euros_override !== undefined) return b.euros_override;
+  return CAT_TV.find(m => m.id === id)?.euros || 0;
+}
+function btvVendidas(id) { return S.bonus_tv[id]?.vendidas || 0; }
+function sbEuros(id)     { const b = S.bonus_sb[id]; if(b && b.euros_override!==undefined) return b.euros_override; return CAT_SB.find(m=>m.id===id)?.euros||0; }
+function sbVendidas(id)  { return S.bonus_sb[id]?.vendidas || 0; }
+function proyEuros(id)   { const b = S.proy[id]; if(b && b.euros_override!==undefined) return b.euros_override; return CAT_PROY.find(m=>m.id===id)?.euros||0; }
+function proyVendidas(id){ return S.proy[id]?.vendidas || 0; }
+
+function totalSbVendidas() { return CAT_SB.reduce((acc,m) => acc + sbVendidas(m.id), 0); }
+function sbMinOk()         { return totalSbVendidas() >= 5; }
+
+// Combo bonus: 20% de barras sobre TV >48" OR 15 barras cualquiera
+function totalTvMas48() {
+  // todos los bonus_tv que sean >48" (todos los de nuestro catálogo lo son)
+  return CAT_TV.reduce((acc, m) => acc + btvVendidas(m.id), 0);
+}
+function comboDesbloqueado() {
+  const sbTotal = totalSbVendidas();
+  const tvTotal = totalTvMas48();
+  // condición: 20% de sb/tv >48 — interpretamos como sbTotal >= tvTotal*0.2 OR sbTotal >= 15
+  return sbTotal >= 15 || (tvTotal > 0 && sbTotal >= tvTotal * 0.2);
+}
+
+function calcTotal() {
+  let t = 0;
+  // TV tramos
+  for (const k of Object.keys(S.tv)) { const a = getActual(S.tv[k]); if(a) t += a.inc; }
+  // TV bonus por modelo
+  for (const id of Object.keys(S.bonus_tv)) {
+    const m = CAT_TV.find(x => x.id === id); if(!m) continue;
+    const obj = S.tv[m.cat]; if(!obj) continue;
+    if (getActual(obj)) t += btvEuros(id) * btvVendidas(id);
+  }
+  // AV tramos
+  for (const k of Object.keys(S.av)) { const a = getActual(S.av[k]); if(a) t += a.inc; }
+  // Soundbars
+  if (sbMinOk()) {
+    for (const m of CAT_SB) t += sbEuros(m.id) * sbVendidas(m.id);
+  }
+  // Proyectores (sin mínimo)
+  for (const m of CAT_PROY) t += proyEuros(m.id) * proyVendidas(m.id);
+  // Combo
+  if (comboDesbloqueado()) t += 100;
+  return t;
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER ALL
+// ═══════════════════════════════════════════════════════════
+function renderAll() {
+  document.getElementById('header-month').textContent = MESES[S.mes] + ' ' + S.anio;
+  document.getElementById('m-dias').textContent = S.dias + 'd';
+  document.getElementById('m-total').textContent = calcTotal().toFixed(0) + '€';
+  document.getElementById('dias-slider').value = S.dias;
+  document.getElementById('dias-display').textContent = S.dias + 'd';
+  renderDashTV();
+  renderDashAV();
+  renderCombo();
+  renderObjetivoDia();
+  renderVentaTV();
+  renderVentaAV();
+  renderBonusTVCatalogo();
+  renderBonusSBCatalogo();
+  renderHistorial();
+  renderConfig();
+  saveState();
+}
+
+// ─── DASHBOARD TV ──────────────────────────────────────────
+function renderDashTV() {
+  let html = '';
+  for (const k of Object.keys(S.tv)) {
+    html += objCardHTML(S.tv[k], k, 'tv');
+  }
+  // Bonus TV summary
+  const activosTv = Object.keys(S.bonus_tv).filter(id => btvVendidas(id) > 0);
+  if (activosTv.length) {
+    html += `<div class="card"><div class="card-label">Bonificadas TV</div>`;
+    for (const id of activosTv) {
+      const m = CAT_TV.find(x => x.id === id); if(!m) continue;
+      const obj = S.tv[m.cat], ok = obj && getActual(obj) !== null;
+      const v = btvVendidas(id), e = btvEuros(id);
+      html += `<div class="sell-item">
+        <div><div class="sell-name">${m.inch} ${m.serie}</div><div class="sell-sub">${e}€/ud · ${v} vendidas</div></div>
+        <div style="color:${ok?'var(--green)':'var(--red)'};font-size:13px;font-weight:500">${ok?'+'+(e*v).toFixed(0)+'€':'🔒'}</div>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  document.getElementById('dash-tv').innerHTML = html;
+}
+
+// ─── DASHBOARD AV ──────────────────────────────────────────
+function renderDashAV() {
+  // --- Soundbars + Combo en dash-sb-combo ---
+  var sbTotal = totalSbVendidas();
+  var sbOk = sbMinOk();
+  var sbInc = sbOk ? CAT_SB.reduce(function(a,m){return a+sbEuros(m.id)*sbVendidas(m.id);},0) : 0;
+  var sbPct = Math.min(100, Math.round(sbTotal/5*100));
+  var comboOk = comboDesbloqueado();
+  var tvTotal = totalTvMas48();
+  var pct15 = Math.min(100, Math.round(sbTotal/15*100));
+  var ratio = tvTotal > 0 ? Math.round(sbTotal/tvTotal*100) : 0;
+
+  var h = '';
+  h += '<div class="obj-card ' + (sbOk ? 'unlocked' : 'locked') + '">';
+  h += '<div class="obj-header"><div>';
+  h += '<div class="obj-name">Soundbars Dolby</div>';
+  h += '<div class="obj-cat">mínimo 5 barras</div></div>';
+  if (sbOk) h += '<span class="obj-badge badge-green">' + sbInc.toFixed(0) + '€ ganados</span>';
+  else       h += '<span class="obj-badge badge-red">Faltan ' + (5-sbTotal) + '</span>';
+  h += '</div>';
+  h += '<div class="progress-wrap"><div class="progress-track">';
+  h += '<div class="progress-fill ' + (sbOk ? 'fill-green' : sbPct>=60 ? 'fill-amber' : 'fill-red') + '" style="width:' + sbPct + '%"></div></div>';
+  h += '<div class="progress-info"><span>' + sbTotal + ' / 5 barras</span><span>' + sbPct + '%</span></div></div></div>';
+
+  h += '<div class="combo-card" style="border-color:' + (comboOk ? '#00b34140' : '#d4891a40') + '">';
+  h += '<div class="combo-header">';
+  h += '<span class="combo-title">Bonus combinado</span>';
+  h += '<span class="combo-val" style="color:' + (comboOk ? 'var(--green)' : 'var(--amber)') + '">' + (comboOk ? '+100€ ✓' : '+100€') + '</span>';
+  h += '</div>';
+  h += '<div class="combo-desc">20% barras / TV &gt;48&quot; = +100€ · O vender 15 barras</div>';
+  h += '<div class="combo-progress" style="margin-top:10px">';
+  h += '<div style="font-size:11px;color:var(--muted);margin-bottom:4px">Opción A: 15 barras — ' + sbTotal + '/15</div>';
+  h += '<div class="progress-track" style="margin-bottom:8px"><div class="progress-fill ' + (pct15>=100 ? 'fill-green' : 'fill-amber') + '" style="width:' + pct15 + '%"></div></div>';
+  h += '<div style="font-size:11px;color:var(--muted);margin-bottom:4px">Opción B: 20% ratio — ' + sbTotal + ' barras / ' + tvTotal + ' TV (' + ratio + '%)</div>';
+  h += '<div class="progress-track"><div class="progress-fill ' + (ratio>=20 ? 'fill-green' : 'fill-red') + '" style="width:' + Math.min(100, ratio*5) + '%"></div></div>';
+  h += '</div></div>';
+  document.getElementById('dash-sb-combo').innerHTML = h;
+
+  // --- OBM + BT + Proyectores en dash-av ---
+  var html = '';
+  Object.keys(S.av).forEach(function(k) { html += objCardHTML(S.av[k], k, 'av'); });
+  var proyUds = CAT_PROY.reduce(function(a,m){return a+proyVendidas(m.id);},0);
+  html += '<div class="card"><div class="card-label">Proyectores</div>';
+  CAT_PROY.forEach(function(m) {
+    var v = proyVendidas(m.id), e = proyEuros(m.id);
+    if (v === 0) return;
+    html += '<div class="sell-item"><div><div class="sell-name">' + m.nombre + '</div><div class="sell-sub">' + e + '€/ud</div></div>';
+    html += '<div style="color:var(--green);font-size:13px;font-weight:500">+' + (e*v).toFixed(0) + '€</div></div>';
+  });
+  if (proyUds === 0) html += '<div class="empty" style="padding:.75rem 0">Sin proyectores vendidos</div>';
+  html += '</div>';
+  document.getElementById('dash-av').innerHTML = html;
+}
+
+function renderCombo() {}
+
+
+function objCardHTML(obj, k, tipo) {
+  const actual = getActual(obj), sig = getSig(obj), min = getMin(obj);
+  const meta = sig ? sig.uds : min.uds;
+  const pct = Math.min(100, Math.round(obj.vendidas/meta*100));
+  const ok = actual !== null;
+  const fill = ok ? 'fill-green' : pct>=60 ? 'fill-amber' : 'fill-red';
+  let badge = ok
+    ? `<span class="obj-badge badge-green">T${actual.n} · ${actual.inc}€</span>`
+    : pct>=60
+      ? `<span class="obj-badge badge-amber">Faltan ${meta-obj.vendidas}</span>`
+      : `<span class="obj-badge badge-red">Sin mínimo</span>`;
+  let trs = '';
+  for (const t of obj.tramos) {
+    const isMin = t.n===obj.min_tramo, isCur = actual && t.n===actual.n;
+    const chip = isCur ? `<span class="tramo-chip chip-cur">actual</span>`
+      : isMin ? `<span class="tramo-chip chip-min">mínimo</span>` : '';
+    trs += `<div class="tramo-row">
+      <span class="tramo-n">T${t.n}</span><span class="tramo-uds">${t.uds}ud</span>${chip}
+      <span class="tramo-spacer"></span><span class="tramo-inc">${t.inc}€</span>
+    </div>`;
+  }
+  return `<div class="obj-card ${ok?'unlocked':'locked'}">
+    <div class="obj-header"><span class="obj-name">${obj.nombre}</span>${badge}</div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill ${fill}" style="width:${pct}%"></div></div>
+      <div class="progress-info"><span>${obj.vendidas} / ${meta} ud.</span><span>${pct}%</span></div>
+    </div>
+    <div class="tramo-list">${trs}</div>
+  </div>`;
+}
+
+// renderCombo handled inside renderDashAV
+
+// ─── OBJETIVO DÍA ──────────────────────────────────────────
+function renderObjetivoDia() {
+  const el = document.getElementById('obj-dia-body');
+  const todosTv = Object.values(S.tv);
+  const todosAv = Object.values(S.av);
+  const sinMinTV = todosTv.filter(o => getActual(o) === null);
+  const sinMinAV = todosAv.filter(o => getActual(o) === null);
+  const sbOk = sbMinOk();
+  const sbTotal = totalSbVendidas();
+  const dias = S.dias;
+
+  let partes = [];
+
+  if (sinMinTV.length > 0) {
+    const urgente = sinMinTV.sort((a,b) => (getMin(a).uds-a.vendidas)-(getMin(b).uds-b.vendidas))[0];
+    const faltan = getMin(urgente).uds - urgente.vendidas;
+    const ritmo = dias > 0 ? Math.ceil(faltan/dias) : faltan;
+    partes.push(`<strong>${urgente.nombre}</strong>: ${faltan} ud. para mínimo (${ritmo}/día)`);
+  }
+  if (!sbOk) {
+    partes.push(`<strong>Soundbars</strong>: ${5-sbTotal} barras para desbloquear bonificación`);
+  }
+  if (sinMinAV.length > 0) {
+    const u = sinMinAV[0];
+    const f = getMin(u).uds - u.vendidas;
+    partes.push(`<strong>${u.nombre}</strong>: ${f} ud. para mínimo AV`);
+  }
+  if (!comboDesbloqueado()) {
+    const sbTotal2 = totalSbVendidas(), tvTotal = totalTvMas48();
+    const f15 = Math.max(0, 15 - sbTotal2);
+    partes.push(`<strong>Combo +100€</strong>: ${f15} barras más para los 15, o ratio 20% (${sbTotal2}/${tvTotal} TV)`);
+  }
+
+  if (partes.length === 0) {
+    el.innerHTML = `Todos los mínimos desbloqueados ✓ — ${calcTotal().toFixed(0)}€ asegurados. Sube tramos y maximiza los modelos bonificados.`;
+  } else {
+    el.innerHTML = partes.map((p,i) => `${i+1}. ${p}`).join('<br>');
+  }
+}
+
+// ─── VENTAS TV ─────────────────────────────────────────────
+function renderVentaTV() {
+  let html = '';
+  for (const k of Object.keys(S.tv)) {
+    const obj = S.tv[k], a = getActual(obj);
+    const sub = a ? `T${a.n} desbloqueado · ${a.inc}€` : `Mínimo: ${getMin(obj).uds}ud — faltan ${Math.max(0,getMin(obj).uds-obj.vendidas)}`;
+    html += `<div class="sell-item">
+      <div><div class="sell-name">${obj.nombre}</div><div class="sell-sub">${sub}</div></div>
+      <div class="counter">
+        <button class="counter-btn" onclick="changeTV('${k}',-1)">−</button>
+        <div class="counter-val" id="cv-${k}">${obj.vendidas}</div>
+        <button class="counter-btn" onclick="changeTV('${k}',1)">+</button>
+      </div>
+    </div>`;
+  }
+  document.getElementById('venta-tv-cats').innerHTML = html;
+}
+
+// ─── VENTAS AV ─────────────────────────────────────────────
+function renderVentaAV() {
+  // Soundbars — contador total + desglose
+  const sbTotal = totalSbVendidas();
+  const sbOk = sbMinOk();
+  let sbHtml = `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+    <div><div class="sell-name">Total barras</div><div class="sell-sub">${sbOk?'✓ Mínimo desbloqueado':'Mínimo 5 — faltan '+(5-sbTotal)}</div></div>
+    <div class="counter">
+      <div style="font-family:var(--display);font-size:22px;font-weight:700;color:${sbOk?'var(--green)':'var(--amber)'}">${sbTotal}</div>
+    </div>
+  </div>`;
+  for (const m of CAT_SB) {
+    const v = sbVendidas(m.id);
+    sbHtml += `<div class="sell-item">
+      <div><div class="sell-name">${m.nombre}</div><div class="sell-sub">${sbEuros(m.id)}€/ud</div></div>
+      <div class="counter">
+        <button class="counter-btn" onclick="changeSB('${m.id}',-1)">−</button>
+        <div class="counter-val" id="sbv-${m.id}">${v}</div>
+        <button class="counter-btn" onclick="changeSB('${m.id}',1)">+</button>
+      </div>
+    </div>`;
+  }
+  document.getElementById('venta-sb').innerHTML = sbHtml;
+
+  // OBM
+  let obmHtml = '';
+  const obm = S.av.obm, obmA = getActual(obm);
+  const obmSub = obmA ? `T${obmA.n} · ${obmA.inc}€` : `Mínimo ${getMin(obm).uds}ud — faltan ${Math.max(0,getMin(obm).uds-obm.vendidas)}`;
+  obmHtml += `<div class="sell-item">
+    <div><div class="sell-name">OBM total</div><div class="sell-sub">${obmSub}</div></div>
+    <div class="counter">
+      <button class="counter-btn" onclick="changeAV('obm',-1)">−</button>
+      <div class="counter-val" id="cv-obm">${obm.vendidas}</div>
+      <button class="counter-btn" onclick="changeAV('obm',1)">+</button>
+    </div>
+  </div>`;
+  document.getElementById('venta-obm').innerHTML = obmHtml;
+
+  // BT
+  let btHtml = '';
+  const bt = S.av.bt, btA = getActual(bt);
+  const btSub = btA ? `T${btA.n} · ${btA.inc}€` : `Mínimo ${getMin(bt).uds}ud — faltan ${Math.max(0,getMin(bt).uds-bt.vendidas)}`;
+  btHtml += `<div class="sell-item">
+    <div><div class="sell-name">BT total</div><div class="sell-sub">${btSub}</div></div>
+    <div class="counter">
+      <button class="counter-btn" onclick="changeAV('bt',-1)">−</button>
+      <div class="counter-val" id="cv-bt">${bt.vendidas}</div>
+      <button class="counter-btn" onclick="changeAV('bt',1)">+</button>
+    </div>
+  </div>`;
+  document.getElementById('venta-bt').innerHTML = btHtml;
+
+  // Proyectores
+  let proyHtml = '';
+  for (const m of CAT_PROY) {
+    const v = proyVendidas(m.id);
+    proyHtml += `<div class="sell-item">
+      <div><div class="sell-name">${m.nombre}</div><div class="sell-sub">${proyEuros(m.id)}€/ud · sin mínimo</div></div>
+      <div class="counter">
+        <button class="counter-btn" onclick="changeProy('${m.id}',-1)">−</button>
+        <div class="counter-val" id="proyv-${m.id}">${v}</div>
+        <button class="counter-btn" onclick="changeProy('${m.id}',1)">+</button>
+      </div>
+    </div>`;
+  }
+  document.getElementById('venta-proy').innerHTML = proyHtml;
+}
+
+// ─── BONUS TV CATÁLOGO ─────────────────────────────────────
+function renderBonusTVCatalogo() {
+  const cats = ['oled','qned','nano'];
+  let html = '';
+  for (const cat of cats) {
+    const modelos = CAT_TV.filter(m => m.cat === cat);
+    html += `<div class="card" style="margin-bottom:.75rem"><div class="card-label">${CAT_NOMBRES_TV[cat]}</div>`;
+    for (const m of modelos) {
+      const v = btvVendidas(m.id), e = btvEuros(m.id);
+      const ganado = v > 0 ? (e*v).toFixed(0) : null;
+      const op = m.bp && v===0 ? 'opacity:.4;' : '';
+      const bpTag = m.bp ? `<span class="tag-bp">bajo pedido</span>` : '';
+      html += `<div class="bcat-row" style="${op}">
+        <div class="bcat-info">
+          <div class="bcat-name">${m.inch} ${m.serie}</div>
+          <div class="bcat-sub">
+            <input class="euros-input" type="number" value="${e}" min="0" step="1" onchange="updateBTVEuros('${m.id}',this.value)">€/ud${bpTag}
+          </div>
+        </div>
+        <div class="counter" style="gap:7px">
+          <button class="counter-btn" style="width:26px;height:26px;font-size:16px" onclick="changeBTV('${m.id}',-1)">−</button>
+          <div class="counter-val" style="font-size:17px;min-width:20px" id="btv-${m.id}">${v}</div>
+          <button class="counter-btn" style="width:26px;height:26px;font-size:16px" onclick="changeBTV('${m.id}',1)">+</button>
+        </div>
+        <div class="bcat-ganado ${ganado?'':'zero'}">${ganado?'+'+ganado+'€':'—'}</div>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  document.getElementById('bonus-tv-catalogo').innerHTML = html;
+}
+
+// ─── BONUS SB CATÁLOGO ─────────────────────────────────────
+function renderBonusSBCatalogo() {
+  const sbOk = sbMinOk();
+  let html = `<div class="card">`;
+  for (const m of CAT_SB) {
+    const v = sbVendidas(m.id), e = sbEuros(m.id);
+    const ganado = sbOk && v > 0 ? (e*v).toFixed(0) : null;
+    html += `<div class="bcat-row">
+      <div class="bcat-info">
+        <div class="bcat-name">${m.nombre}</div>
+        <div class="bcat-sub">
+          <input class="euros-input" type="number" value="${e}" min="0" step="1" onchange="updateSBEuros('${m.id}',this.value)">€/ud
+        </div>
+      </div>
+      <div class="counter" style="gap:7px">
+        <button class="counter-btn" style="width:26px;height:26px;font-size:16px" onclick="changeSB('${m.id}',-1)">−</button>
+        <div class="counter-val" style="font-size:17px;min-width:20px" id="sbcat-${m.id}">${v}</div>
+        <button class="counter-btn" style="width:26px;height:26px;font-size:16px" onclick="changeSB('${m.id}',1)">+</button>
+      </div>
+      <div class="bcat-ganado ${ganado?'':'zero'}">${ganado?'+'+ganado+'€':sbOk?'—':'🔒'}</div>
+    </div>`;
+  }
+  html += `</div>`;
+  document.getElementById('bonus-sb-catalogo').innerHTML = html;
+}
+
+// ─── HISTORIAL ─────────────────────────────────────────────
+function renderHistorial() {
+  const hist = S.historial;
+  document.getElementById('historial-empty').style.display = hist.length ? 'none' : 'block';
+  if (!hist.length) { document.getElementById('historial-lista').innerHTML = ''; return; }
+  let html = '';
+  for (let i = hist.length-1; i >= 0; i--) {
+    const m = hist[i];
+    html += `<div class="mes-card" onclick="verDetalle(${i})">
+      <div class="mes-header">
+        <span class="mes-nombre">${m.label}</span>
+        <span class="mes-total">${m.total}€</span>
+      </div>
+      <div class="mes-stats"><span>TV + AV · toca para ver desglose</span></div>
+    </div>`;
+  }
+  document.getElementById('historial-lista').innerHTML = html;
+}
+
+function verDetalle(idx) {
+  const m = S.historial[idx];
+  let html = `<button class="detail-close" onclick="document.getElementById('detail-overlay').classList.remove('open')">← Volver</button>
+    <div style="font-family:var(--display);font-size:20px;font-weight:800;margin-bottom:4px">${m.label}</div>
+    <div style="font-size:28px;font-weight:700;color:var(--green);font-family:var(--display);margin-bottom:1.5rem">${m.total}€</div>`;
+
+  html += `<div class="card-label" style="margin-bottom:.5rem">Objetivos TV</div>`;
+  for (const k of Object.keys(m.tv||{})) {
+    const obj = m.tv[k], min = obj.tramos.find(t=>t.n===obj.min_tramo);
+    const ok = obj.vendidas >= min.uds;
+    let lbl = 'Sin mínimo';
+    if(ok){for(const t of obj.tramos){if(obj.vendidas>=t.uds){lbl=`T${t.n} · ${t.inc}€`;break;}}}
+    html += `<div class="card" style="margin-bottom:.5rem"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:var(--display);font-weight:700">${obj.nombre}</span><span style="color:${ok?'var(--green)':'var(--red)'}">${lbl}</span></div><div style="font-size:11px;color:var(--muted);margin-top:4px">${obj.vendidas} unidades</div></div>`;
+  }
+
+  html += `<div class="card-label" style="margin:.75rem 0 .5rem">Objetivos AV</div>`;
+  for (const k of Object.keys(m.av||{})) {
+    const obj = m.av[k], min = obj.tramos.find(t=>t.n===obj.min_tramo);
+    const ok = obj.vendidas >= min.uds;
+    let lbl = 'Sin mínimo';
+    if(ok){for(const t of obj.tramos){if(obj.vendidas>=t.uds){lbl=`T${t.n} · ${t.inc}€`;break;}}}
+    html += `<div class="card" style="margin-bottom:.5rem"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:var(--display);font-weight:700">${obj.nombre}</span><span style="color:${ok?'var(--green)':'var(--red)'}">${lbl}</span></div><div style="font-size:11px;color:var(--muted);margin-top:4px">${obj.vendidas} unidades</div></div>`;
+  }
+
+  document.getElementById('detail-panel').innerHTML = html;
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+// ─── CONFIG ────────────────────────────────────────────────
+function renderConfig() {
+  renderConfigGroup('config-tv-tramos', S.tv, 'tv');
+  renderConfigGroup('config-av-tramos', S.av, 'av');
+}
+function renderConfigGroup(elId, grupo, tipo) {
+  let html = '';
+  for (const k of Object.keys(grupo)) {
+    const obj = grupo[k];
+    html += `<div style="margin-bottom:10px"><div style="font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">${obj.nombre}</div>`;
+    for (const t of obj.tramos) {
+      const isMin = t.n===obj.min_tramo;
+      html += `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px">
+        <span style="color:var(--muted);width:20px">T${t.n}</span>
+        <input type="number" value="${t.uds}" min="1" style="width:54px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;color:var(--text);font-family:var(--mono);font-size:12px" onchange="updateTramo('${tipo}','${k}',${t.n},'uds',this.value)">
+        <span style="color:var(--muted)">ud</span>
+        <input type="number" value="${t.inc}" min="0" style="width:54px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;color:var(--text);font-family:var(--mono);font-size:12px" onchange="updateTramo('${tipo}','${k}',${t.n},'inc',this.value)">
+        <span style="color:var(--green);font-size:11px">€${isMin?' ← mín':''}</span>
+      </div>`;
+    }
+    html += `</div><div style="height:1px;background:var(--border);margin:8px 0"></div>`;
+  }
+  document.getElementById(elId).innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════
+function changeTV(k,d)   { S.tv[k].vendidas=Math.max(0,S.tv[k].vendidas+d); renderAll(); }
+function changeAV(k,d)   { S.av[k].vendidas=Math.max(0,S.av[k].vendidas+d); renderAll(); }
+function changeBTV(id,d) { if(!S.bonus_tv[id]) S.bonus_tv[id]={vendidas:0}; S.bonus_tv[id].vendidas=Math.max(0,(S.bonus_tv[id].vendidas||0)+d); renderAll(); }
+function changeSB(id,d)  { if(!S.bonus_sb[id]) S.bonus_sb[id]={vendidas:0}; S.bonus_sb[id].vendidas=Math.max(0,(S.bonus_sb[id].vendidas||0)+d); renderAll(); }
+function changeProy(id,d){ if(!S.proy[id]) S.proy[id]={vendidas:0}; S.proy[id].vendidas=Math.max(0,(S.proy[id].vendidas||0)+d); renderAll(); }
+
+function updateBTVEuros(id,val){ if(!S.bonus_tv[id]) S.bonus_tv[id]={vendidas:0}; S.bonus_tv[id].euros_override=parseFloat(val)||0; saveState(); renderBonusTVCatalogo(); renderDashTV(); document.getElementById('m-total').textContent=calcTotal().toFixed(0)+'€'; }
+function updateSBEuros(id,val) { if(!S.bonus_sb[id]) S.bonus_sb[id]={vendidas:0}; S.bonus_sb[id].euros_override=parseFloat(val)||0; saveState(); renderBonusSBCatalogo(); renderDashAV(); document.getElementById('m-total').textContent=calcTotal().toFixed(0)+'€'; }
+
+function updateDias(val) {
+  S.dias=parseInt(val);
+  document.getElementById('dias-display').textContent=val+'d';
+  document.getElementById('m-dias').textContent=val+'d';
+  renderObjetivoDia(); saveState();
+}
+function updateTramo(tipo,k,n,field,val) {
+  const grupo = tipo==='tv' ? S.tv : S.av;
+  const t = grupo[k].tramos.find(t=>t.n===n);
+  if(t) t[field]=parseFloat(val)||0;
+  renderAll();
+}
+function resetTramos() { S.tv=JSON.parse(JSON.stringify(DEFAULT_TV)); S.av=JSON.parse(JSON.stringify(DEFAULT_AV)); renderAll(); }
+function resetAll()    { localStorage.removeItem('lg_v5'); S=defaultState(); renderAll(); }
+
+function cerrarMes() {
+  if(!confirm('¿Cerrar '+MESES[S.mes]+' '+S.anio+' y guardar?')) return;
+  S.historial.push({
+    label:MESES[S.mes]+' '+S.anio, mes:S.mes, anio:S.anio, dias:S.dias,
+    total:calcTotal().toFixed(0),
+    tv:JSON.parse(JSON.stringify(S.tv)), av:JSON.parse(JSON.stringify(S.av)),
+    bonus_tv:JSON.parse(JSON.stringify(S.bonus_tv)),
+    bonus_sb:JSON.parse(JSON.stringify(S.bonus_sb)),
+    proy:JSON.parse(JSON.stringify(S.proy))
+  });
+  const nm=(S.mes+1)%12;
+  S.mes=nm; S.anio=nm===0?S.anio+1:S.anio; S.dias=20;
+  S.tv=JSON.parse(JSON.stringify(DEFAULT_TV));
+  S.av=JSON.parse(JSON.stringify(DEFAULT_AV));
+  S.bonus_tv={}; S.bonus_sb={}; S.proy={};
+  renderAll();
+  alert('✓ Guardado. Nuevo mes: '+MESES[S.mes]+' '+S.anio);
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAVEGACIÓN
+// ═══════════════════════════════════════════════════════════
+function showSec(name,btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function showSegVenta(seg,btn) {
+  document.getElementById('venta-tv').style.display = seg==='tv'?'block':'none';
+  document.getElementById('venta-av').style.display = seg==='av'?'block':'none';
+  btn.parentElement.querySelectorAll('.seg-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+function showSegBonus(seg,btn) {
+  document.getElementById('bonus-tv').style.display = seg==='tv'?'block':'none';
+  document.getElementById('bonus-sb').style.display = seg==='sb'?'block':'none';
+  btn.parentElement.querySelectorAll('.seg-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+function irAlCoach() {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-coach').classList.add('active');
+  document.querySelectorAll('.nav-btn')[4].classList.add('active');
+  coachPrioridad();
+}
+
+// ═══════════════════════════════════════════════════════════
+// COACH IA
+// ═══════════════════════════════════════════════════════════
+async function callCoach(prompt) {
+  const area = document.getElementById('coach-area');
+  area.innerHTML=`<div class="coach-box"><div class="coach-from">Coach LG · IA</div><em style="color:var(--muted)">Analizando...</em></div>`;
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:1000,
+        system:`Eres el coach de ventas personal de Adrián, promotor LG en Media Markt Las Palmas de Gran Canaria. Adrián tiene 24 años, es ambicioso y directo. Habla en español, sin rodeos. Nunca bullet points con guiones — párrafos cortos o números. Máximo 3 párrafos. Concreto y práctico.`,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data = await resp.json();
+    const texto = data.content.map(c=>c.text||'').join('');
+    area.innerHTML=`<div class="coach-box"><div class="coach-from">Coach LG · IA</div>${texto}</div>`;
+  } catch(e) {
+    area.innerHTML=`<div class="coach-box"><div class="coach-from">Coach LG · IA</div>Error de conexión.</div>`;
+  }
+}
+
+function buildCtx() {
+  const tvP = Object.keys(S.tv).map(k=>{
+    const o=S.tv[k],a=getActual(o),min=getMin(o);
+    return `TV ${o.nombre}: ${o.vendidas}ud → ${a?'T'+a.n+' ('+a.inc+'€)':'SIN MÍNIMO, faltan '+(min.uds-o.vendidas)+'ud'}`;
+  }).join('\n');
+  const avP = Object.keys(S.av).map(k=>{
+    const o=S.av[k],a=getActual(o),min=getMin(o);
+    return `AV ${o.nombre}: ${o.vendidas}ud → ${a?'T'+a.n+' ('+a.inc+'€)':'SIN MÍNIMO, faltan '+(min.uds-o.vendidas)+'ud'}`;
+  }).join('\n');
+  const sbTotal = totalSbVendidas();
+  const sbInc = sbMinOk() ? CAT_SB.reduce((a,m)=>a+sbEuros(m.id)*sbVendidas(m.id),0) : 0;
+  const proyInc = CAT_PROY.reduce((a,m)=>a+proyEuros(m.id)*proyVendidas(m.id),0);
+  return `Situación actual:\n${tvP}\n${avP}\nSoundbars: ${sbTotal} vendidas (mínimo 5, ${sbMinOk()?'DESBLOQUEADO +'+sbInc+'€':'SIN MÍNIMO'})\nProyectores: ${proyInc}€\nCombo +100€: ${comboDesbloqueado()?'DESBLOQUEADO':'pendiente'}\nIncentivo total: ${calcTotal().toFixed(0)}€\nDías restantes: ${S.dias}`;
+}
+
+function coachAnalisis()  { callCoach(`${buildCtx()}\n\nAnálisis completo: cómo voy en TV y AV, riesgo de no cobrar, prioridad número uno.`); }
+function coachObjecion()  { callCoach('Practica conmigo. Haz de cliente que dice "En Amazon está más barato". Sin romper el rol. Luego dame feedback breve.'); }
+function coachPrioridad() { callCoach(`${buildCtx()}\n\n¿Qué categoría priorizo hoy — TV, soundbars, OBM, BT o proyectores? Dame estrategia concreta para el turno.`); }
+function coachCierre()    { callCoach('Técnica de cierre para vender en tienda física con un cliente que duda entre hoy o esperar. Directa, sin teoría.'); }
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+renderAll();
+</script>
+</body>
+</html>
