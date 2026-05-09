@@ -9,8 +9,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LG Coach">
 <meta name="theme-color" content="#0d0d0d">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230d0d0d'/%3E%3Ctext x='50' y='68' font-family='Arial Black' font-size='50' font-weight='900' fill='%23E2000F' text-anchor='middle'%3ELG%3C/text%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230d0d0d'/%3E%3Ctext x='50' y='68' font-family='Arial Black' font-size='50' font-weight='900' fill='%23E2000F' text-anchor='middle'%3ELG%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -107,12 +108,29 @@ body{max-width:480px;margin:0 auto;padding:0 0 145px}
 .combo-progress{margin-top:10px}
 
 /* OBJETIVO DÍA */
-.obj-dia{background:var(--surface);border:1px solid #d4891a30;border-radius:12px;padding:1rem 1.125rem;margin-bottom:.75rem;position:relative;overflow:hidden}
-.obj-dia::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber)}
-.obj-dia-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.obj-dia-title{font-size:10px;color:var(--amber);letter-spacing:.1em;text-transform:uppercase;font-weight:500}
-.obj-dia-link{font-size:10px;color:var(--muted);cursor:pointer;text-decoration:underline}
-.obj-dia-body{font-size:13px;line-height:1.65}
+.semana-card{background:var(--surface);border:1px solid #d4891a30;border-radius:12px;padding:1rem 1.25rem;margin-bottom:.75rem;position:relative;overflow:hidden}
+.semana-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber)}
+.semana-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.semana-title{font-size:10px;color:var(--amber);letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.semana-reset{font-size:10px;color:var(--muted);cursor:pointer;text-decoration:underline}
+.semana-input-row{display:flex;gap:8px;margin-bottom:10px}
+.semana-input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none;transition:border-color .2s}
+.semana-input:focus{border-color:var(--amber)}
+.semana-add-btn{background:var(--amber);border:none;border-radius:8px;padding:8px 14px;color:#fff;font-family:var(--mono);font-size:13px;cursor:pointer;font-weight:500}
+.semana-obj{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.semana-obj:last-child{border-bottom:none}
+.semana-check{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.semana-check.done{background:var(--green);border-color:var(--green)}
+.semana-texto{flex:1;font-size:13px;line-height:1.4}
+.semana-texto.done{text-decoration:line-through;color:var(--muted)}
+.semana-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;line-height:1}
+.semana-del:hover{color:var(--red)}
+.semana-progreso{margin-top:10px}
+.semana-prog-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-bottom:5px}
+.semana-prog-fill{height:100%;border-radius:2px;background:var(--amber);transition:width .4s}
+.semana-prog-fill.completo{background:var(--green)}
+.semana-prog-label{font-size:10px;color:var(--muted)}
+.semana-empty{font-size:12px;color:var(--muted);text-align:center;padding:.75rem 0;font-style:italic}
 
 /* SELL / COUNTER */
 .sell-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
@@ -198,6 +216,21 @@ body{max-width:480px;margin:0 auto;padding:0 0 145px}
 
 <!-- DASHBOARD -->
 <div id="sec-dashboard" class="section active">
+
+  <!-- Objetivos semanales — ARRIBA -->
+  <div class="semana-card">
+    <div class="semana-header">
+      <span class="semana-title">Objetivos de la semana</span>
+      <span class="semana-reset" onclick="resetSemana()">Nueva semana</span>
+    </div>
+    <div class="semana-input-row">
+      <input class="semana-input" id="semana-input" placeholder="Añadir objetivo..." type="text" onkeydown="if(event.key==='Enter')addObjetivoSemana()">
+      <button class="semana-add-btn" onclick="addObjetivoSemana()">+</button>
+    </div>
+    <div id="semana-lista"></div>
+    <div class="semana-progreso" id="semana-progreso"></div>
+  </div>
+
   <div class="metrics">
     <div class="metric">
       <div class="metric-label">Días restantes</div>
@@ -218,14 +251,6 @@ body{max-width:480px;margin:0 auto;padding:0 0 145px}
   <div id="dash-sb-combo"></div>
   <div id="dash-av"></div>
 
-  <!-- Objetivo del día -->
-  <div class="obj-dia">
-    <div class="obj-dia-header">
-      <span class="obj-dia-title">Objetivo del día</span>
-      <span class="obj-dia-link" onclick="irAlCoach()">Análisis completo →</span>
-    </div>
-    <div id="obj-dia-body" class="obj-dia-body" style="color:var(--muted);font-size:12px">Calculando...</div>
-  </div>
 </div>
 
 <!-- VENTAS -->
@@ -426,6 +451,7 @@ function defaultState() {
     bonus_tv: {},   // id -> {vendidas, euros_override}
     bonus_sb: {},   // id -> {vendidas, euros_override}
     proy: {},       // id -> {vendidas, euros_override}
+    semana: [],     // objetivos semanales
     historial: []
   };
 }
@@ -441,7 +467,7 @@ let S = loadState();
 if (!S.av)       S.av = JSON.parse(JSON.stringify(DEFAULT_AV));
 if (!S.bonus_sb) S.bonus_sb = {};
 if (!S.proy)     S.proy = {};
-if (!S.historial)S.historial = [];
+if (!S.semana)   S.semana = [];
 if (!S.bonus_tv) S.bonus_tv = S.bonus || {};
 
 // ═══════════════════════════════════════════════════════════
@@ -519,7 +545,7 @@ function renderAll() {
   renderDashTV();
   renderDashAV();
   renderCombo();
-  renderObjetivoDia();
+  renderSemana();
   renderVentaTV();
   renderVentaAV();
   renderBonusTVCatalogo();
@@ -643,44 +669,67 @@ function objCardHTML(obj, k, tipo) {
 
 // renderCombo handled inside renderDashAV
 
-// ─── OBJETIVO DÍA ──────────────────────────────────────────
-function renderObjetivoDia() {
-  const el = document.getElementById('obj-dia-body');
-  const todosTv = Object.values(S.tv);
-  const todosAv = Object.values(S.av);
-  const sinMinTV = todosTv.filter(o => getActual(o) === null);
-  const sinMinAV = todosAv.filter(o => getActual(o) === null);
-  const sbOk = sbMinOk();
-  const sbTotal = totalSbVendidas();
-  const dias = S.dias;
+// ─── OBJETIVOS SEMANALES ───────────────────────────────────
+function renderSemana() {
+  const objs = S.semana || [];
+  const lista = document.getElementById('semana-lista');
+  const prog = document.getElementById('semana-progreso');
+  if (!lista) return;
 
-  let partes = [];
-
-  if (sinMinTV.length > 0) {
-    const urgente = sinMinTV.sort((a,b) => (getMin(a).uds-a.vendidas)-(getMin(b).uds-b.vendidas))[0];
-    const faltan = getMin(urgente).uds - urgente.vendidas;
-    const ritmo = dias > 0 ? Math.ceil(faltan/dias) : faltan;
-    partes.push(`<strong>${urgente.nombre}</strong>: ${faltan} ud. para mínimo (${ritmo}/día)`);
-  }
-  if (!sbOk) {
-    partes.push(`<strong>Soundbars</strong>: ${5-sbTotal} barras para desbloquear bonificación`);
-  }
-  if (sinMinAV.length > 0) {
-    const u = sinMinAV[0];
-    const f = getMin(u).uds - u.vendidas;
-    partes.push(`<strong>${u.nombre}</strong>: ${f} ud. para mínimo AV`);
-  }
-  if (!comboDesbloqueado()) {
-    const sbTotal2 = totalSbVendidas(), tvTotal = totalTvMas48();
-    const f15 = Math.max(0, 15 - sbTotal2);
-    partes.push(`<strong>Combo +100€</strong>: ${f15} barras más para los 15, o ratio 20% (${sbTotal2}/${tvTotal} TV)`);
+  if (objs.length === 0) {
+    lista.innerHTML = '<div class="semana-empty">Añade tus objetivos para esta semana</div>';
+    prog.innerHTML = '';
+    return;
   }
 
-  if (partes.length === 0) {
-    el.innerHTML = `Todos los mínimos desbloqueados ✓ — ${calcTotal().toFixed(0)}€ asegurados. Sube tramos y maximiza los modelos bonificados.`;
-  } else {
-    el.innerHTML = partes.map((p,i) => `${i+1}. ${p}`).join('<br>');
-  }
+  let html = '';
+  objs.forEach(function(o, i) {
+    html += '<div class="semana-obj">';
+    html += '<button class="semana-check ' + (o.done ? 'done' : '') + '" onclick="toggleSemana(' + i + ')">' + (o.done ? '✓' : '') + '</button>';
+    html += '<span class="semana-texto ' + (o.done ? 'done' : '') + '">' + o.texto + '</span>';
+    html += '<button class="semana-del" onclick="deleteSemana(' + i + ')">×</button>';
+    html += '</div>';
+  });
+  lista.innerHTML = html;
+
+  const total = objs.length;
+  const hechos = objs.filter(function(o){return o.done;}).length;
+  const pct = Math.round(hechos / total * 100);
+  const completo = hechos === total;
+  prog.innerHTML = '<div class="semana-prog-bar"><div class="semana-prog-fill ' + (completo ? 'completo' : '') + '" style="width:' + pct + '%"></div></div>'
+    + '<div class="semana-prog-label">' + hechos + ' de ' + total + ' completados</div>';
+}
+
+function addObjetivoSemana() {
+  const input = document.getElementById('semana-input');
+  const texto = input.value.trim();
+  if (!texto) return;
+  if (!S.semana) S.semana = [];
+  S.semana.push({texto: texto, done: false});
+  input.value = '';
+  renderSemana();
+  saveState();
+}
+
+function toggleSemana(i) {
+  if (!S.semana) return;
+  S.semana[i].done = !S.semana[i].done;
+  renderSemana();
+  saveState();
+}
+
+function deleteSemana(i) {
+  if (!S.semana) return;
+  S.semana.splice(i, 1);
+  renderSemana();
+  saveState();
+}
+
+function resetSemana() {
+  if (!confirm('¿Empezar nueva semana y borrar los objetivos actuales?')) return;
+  S.semana = [];
+  renderSemana();
+  saveState();
 }
 
 // ─── VENTAS TV ─────────────────────────────────────────────
@@ -915,7 +964,7 @@ function updateDias(val) {
   S.dias=parseInt(val);
   document.getElementById('dias-display').textContent=val+'d';
   document.getElementById('m-dias').textContent=val+'d';
-  renderObjetivoDia(); saveState();
+  renderSemana(); saveState();
 }
 function updateTramo(tipo,k,n,field,val) {
   const grupo = tipo==='tv' ? S.tv : S.av;
@@ -1024,3 +1073,4 @@ renderAll();
 </script>
 </body>
 </html>
+
